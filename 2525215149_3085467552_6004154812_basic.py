@@ -11,6 +11,7 @@ def main():
 
     lines = read_input()
     string1, string2 = generate_strings(lines)
+
     print("program size: " + str(len(string1) + len(string2)))
 
     dp, min_cost = alignment(string1, string2)

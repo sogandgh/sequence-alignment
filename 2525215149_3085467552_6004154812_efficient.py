@@ -4,8 +4,6 @@ import psutil
 
 from alignment import mismatch_cost_dic, gap_cost, alignment, backtrack, generate_strings, read_input
 
-total_cost = 0
-
 
 # generating alignments of two string using divide and conquer + dynamic programming
 def divide_and_conquer_alignment(x, y):
@@ -21,20 +19,24 @@ def divide_and_conquer_alignment(x, y):
         left_col = space_efficient_alignment(x, y[0:mid])
         right_col = space_efficient_alignment(x[::-1], y[mid: column_len][::-1])
 
+        right_col.reverse()
         combine_cols = [left_val + right_val for left_val, right_val in zip(left_col, right_col)]
+
 
         min_cost = min(combine_cols)
         min_index = int(combine_cols.index(min_cost))
 
-        matched_string_1_left, matched_string_2_left = divide_and_conquer_alignment(x[:min_index],
-                                                                                    y[:int(column_len / 2)])
-        matched_string_1_right, matched_string_2_right = divide_and_conquer_alignment(x[min_index:],
+
+        matched_string_1_left, matched_string_2_left, cost_left = divide_and_conquer_alignment(x[:min_index],
+                                                                                    y[:int(column_len / 2)], )
+        matched_string_1_right, matched_string_2_right, cost_right = divide_and_conquer_alignment(x[min_index:],
                                                                                       y[int(column_len / 2):])
 
         matched_string_1 = matched_string_1_left + matched_string_1_right
         matched_string_2 = matched_string_2_left + matched_string_2_right
+        cost = cost_left + cost_right
 
-    return matched_string_1, matched_string_2
+    return matched_string_1, matched_string_2, cost
 
 
 # space efficient way of finding the optimal cost of alignment, by using only two columns
@@ -78,10 +80,7 @@ def main():
 
     print("program size: " + str(len(string1) + len(string2)))
 
-    alignment_cost = space_efficient_alignment(string1, string2)
-    matched_string_1, matched_string_2 = divide_and_conquer_alignment(string1, string2)
-    min_cost = alignment_cost[len(alignment_cost) - 1]
-
+    matched_string_1, matched_string_2, min_cost = divide_and_conquer_alignment(string1, string2)
     time_elapsed = (time.perf_counter() - start)
     memory_used = process.memory_info().rss / 1024
 
