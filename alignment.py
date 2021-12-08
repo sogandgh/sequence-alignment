@@ -7,6 +7,7 @@ mismatch_cost_dic = {"AA": 0, "AC": 110, "AG": 48, "AT": 94,
 gap_cost = 30
 
 
+# find the actual alignment
 def backtrack(x, y, dp):
     i = len(dp) - 1
     j = len(dp[0]) - 1
@@ -50,6 +51,7 @@ def backtrack(x, y, dp):
     return (matched_string_1), (matched_string_2)
 
 
+# find the optimal cost of the alignment
 def alignment(x, y):
     row_len = len(x)
     column_len = len(y)
@@ -80,6 +82,7 @@ def alignment(x, y):
     return dp, dp[row_len][column_len]
 
 
+# generate two strings
 def generate_strings(lines):
     string1 = lines[0]
     string1 = string1.rsplit()[0]
@@ -108,6 +111,7 @@ def generate_strings(lines):
     return string1, string2
 
 
+# read input file
 def read_input():
     filename = sys.argv[-1]
     if filename == '':
@@ -115,18 +119,3 @@ def read_input():
     file1 = open(filename, 'r')
     lines = file1.readlines()
     return lines
-
-
-def main():
-    lines = read_input()
-    string1, string2 = generate_strings(lines)
-    dp, min_cost = alignment(string1, string2)
-    matched_string_1, matched_string_2 = backtrack(string1, string2, dp)
-
-    print(matched_string_1)
-    print(matched_string_2)
-    print(min_cost)
-
-
-if __name__ == "__main__":
-    main()

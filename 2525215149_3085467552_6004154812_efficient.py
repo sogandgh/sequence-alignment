@@ -1,10 +1,14 @@
-from basic import mismatch_cost_dic, gap_cost, alignment, backtrack, generate_strings, read_input
+import time
+import os
+import psutil
+
+from alignment import mismatch_cost_dic, gap_cost, alignment, backtrack, generate_strings, read_input
 
 total_cost = 0
 
 
+# generating alignments of two string using divide and conquer + dynamic programming
 def divide_and_conquer_alignment(x, y):
-
     row_len = len(x)
     column_len = len(y)
 
@@ -33,6 +37,7 @@ def divide_and_conquer_alignment(x, y):
     return matched_string_1, matched_string_2
 
 
+# space efficient way of finding the optimal cost of alignment, by using only two columns
 def space_efficient_alignment(x, y):
     row_len = len(x)
     column_len = len(y)
@@ -65,17 +70,33 @@ def space_efficient_alignment(x, y):
 
 
 def main():
+    start = time.perf_counter()
+    process = psutil.Process(os.getpid())
 
     lines = read_input()
     string1, string2 = generate_strings(lines)
-    alignment_cost = space_efficient_alignment(string1, string2)
-    matched_string_1, matched_string_2 = divide_and_conquer_alignment( string1, string2)
 
-    print(string1)
-    print(string2)
-    print(matched_string_1)
-    print(matched_string_2)
-    print(alignment_cost[len(alignment_cost)-1])
+    print("program size: " + str(len(string1) + len(string2)))
+
+    alignment_cost = space_efficient_alignment(string1, string2)
+    matched_string_1, matched_string_2 = divide_and_conquer_alignment(string1, string2)
+    min_cost = alignment_cost[len(alignment_cost) - 1]
+
+    time_elapsed = (time.perf_counter() - start)
+    memory_used = process.memory_info().rss / 1024
+
+    if len(matched_string_1) >= 50:
+        matched_string_1 = matched_string_1[:50] + matched_string_1[len(matched_string_1) - 50:]
+    if len(matched_string_2) >= 50:
+        matched_string_2 = matched_string_2[:50] + matched_string_2[len(matched_string_2) - 50:]
+
+    f = open("output.txt", "w")
+    f.write(matched_string_1 + "\n")
+    f.write(matched_string_2 + "\n")
+    f.write(str(min_cost) + "\n")
+    f.write(str(time_elapsed) + "\n")
+    f.write(str(memory_used) + "\n")
+    f.close()
 
 
 if __name__ == "__main__":
