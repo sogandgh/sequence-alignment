@@ -7,37 +7,7 @@ mismatch_cost_dic = {"AA": 0, "AC": 110, "AG": 48, "AT": 94,
 gap_cost = 30
 
 
-def calculate_matching_cost(x, y):
-    row_len = len(x)
-    column_len = len(y)
-
-    # initializing the dynamic programming table
-    dp = [[0 for j in range(column_len + 1)] for i in range(row_len + 1)]
-
-    # base cases
-    for i in range(0, row_len + 1):
-        dp[i][0] = gap_cost * i
-
-    for j in range(0, column_len + 1):
-        dp[0][j] = gap_cost * j
-
-    # calculate cost of optimal alignment
-    for i in range(1, row_len + 1):
-        for j in range(1, column_len + 1):
-
-            # if the characters are matching
-            if x[i - 1] == y[j - 1]:
-                dp[i][j] = dp[i - 1][j - 1]
-            else:
-                case_1 = dp[i - 1][j - 1] + mismatch_cost_dic[x[i - 1] + y[j - 1]]
-                case_2 = dp[i - 1][j] + gap_cost
-                case_3 = dp[i][j - 1] + gap_cost
-
-                dp[i][j] = min(case_1, case_2, case_3)
-    return dp, dp[row_len][column_len]
-
-
-def generate_matching(x, y, dp):
+def backtrack(x, y, dp):
     i = len(dp) - 1
     j = len(dp[0]) - 1
 
@@ -45,7 +15,7 @@ def generate_matching(x, y, dp):
     matched_string_2 = ''
 
     while (i > 0) and (j > 0):
-        if (x[i - 1] == y[j - 1]) and dp[i][j] == dp[i - 1][j - 1]:
+        if dp[i][j] == dp[i - 1][j - 1]:
             matched_string_1 = x[i - 1] + matched_string_1
             matched_string_2 = y[j - 1] + matched_string_2
             i -= 1
@@ -77,7 +47,37 @@ def generate_matching(x, y, dp):
         matched_string_1 = '-' + matched_string_1
         j -= 1
 
-    return (matched_string_1[:50] + matched_string_1[-50:]), (matched_string_2[:50] + matched_string_2[-50:])
+    return (matched_string_1), (matched_string_2)
+
+
+def alignment(x, y):
+    row_len = len(x)
+    column_len = len(y)
+
+    # initializing the dynamic programming table
+    dp = [[0 for j in range(column_len + 1)] for i in range(row_len + 1)]
+
+    # base cases
+    for i in range(0, row_len + 1):
+        dp[i][0] = gap_cost * i
+
+    for j in range(0, column_len + 1):
+        dp[0][j] = gap_cost * j
+
+    # calculate cost of optimal alignment
+    for i in range(1, row_len + 1):
+        for j in range(1, column_len + 1):
+
+            # if the characters are matching
+            if x[i - 1] == y[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1]
+            else:
+                case_1 = dp[i - 1][j - 1] + mismatch_cost_dic[x[i - 1] + y[j - 1]]
+                case_2 = dp[i - 1][j] + gap_cost
+                case_3 = dp[i][j - 1] + gap_cost
+
+                dp[i][j] = min(case_1, case_2, case_3)
+    return dp, dp[row_len][column_len]
 
 
 def generate_strings(lines):
@@ -110,13 +110,23 @@ def generate_strings(lines):
 
 def read_input():
     filename = sys.argv[-1]
+    if filename == '':
+        exit()
     file1 = open(filename, 'r')
     lines = file1.readlines()
     return lines
 
 
-lines = read_input()
-string1, string2 = generate_strings(lines)
+def main():
+    lines = read_input()
+    string1, string2 = generate_strings(lines)
+    dp, min_cost = alignment(string1, string2)
+    matched_string_1, matched_string_2 = backtrack(string1, string2, dp)
 
-dp, min_cost = calculate_matching_cost(string1, string2)
-generate_matching(string1, string2, dp)
+    print(matched_string_1)
+    print(matched_string_2)
+    print(min_cost)
+
+
+if __name__ == "__main__":
+    main()

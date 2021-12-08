@@ -1,2 +1,2 @@
 #!/bin/sh
-python3 main.py input.txt
+python3 basic.py input.txt
