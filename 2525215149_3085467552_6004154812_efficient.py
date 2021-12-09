@@ -78,8 +78,6 @@ def main():
     lines = read_input()
     string1, string2 = generate_strings(lines)
 
-    print("program size: " + str(len(string1) + len(string2)))
-
     matched_string_1, matched_string_2, min_cost = divide_and_conquer_alignment(string1, string2)
     time_elapsed = (time.perf_counter() - start)
     memory_used = process.memory_info().rss / 1024
