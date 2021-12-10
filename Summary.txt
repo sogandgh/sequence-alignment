@@ -1,0 +1,12 @@
+Summary:
+As illustrated in the plots, the efficient solution takes less memory but more time in comparison with the basic approach.
+The basic approach has a O(mn) time and space complexities, with respect to the size of the two strings m and n. Since the array needed to store two strings has O(mn) entries, we spend constant time on each at worst.
+The efficient solution that utilizes divide and conquer also takes O(mn) time. However, with a deeper look at its implementation, we could get to more precise time complexity of O(2mn) because, at the first step of the divide, we require O(mn) work to find the optimum breaking point, and for each step forward, the size of the problem would be halved. So, the total work required is summed up to O(2mn). Although the factor of 2 does not change the time complexity, the difference between run times could be illustrated, especially in the larger input size.
+On the other hand, the efficient approach just takes O(m+n) space because we apply the recursive calls sequentially and reuse the working space from one call to the next. Thus, since we only work on one recursive call at a time, the total space usage is O(m+n). The difference between the basic and the efficient solution is significant, particularly in large inputs.
+
+
+Contributions:
+Sogand Ghods (2525215149) : Coding and testing.
+Sepehr Jalali (6004154812): Testing and creating plots.
+Mohammad Mahdieh (3085467552): Report preparation and writing the summary.
+
